@@ -49,38 +49,38 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #FFFBF5;
+  --foreground: #1a1a2e;
+  --card: #ffffff;
+  --card-foreground: #1a1a2e;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a2e;
+  --primary: #7B1E3A;
+  --primary-foreground: #FFF8E7;
+  --secondary: #FFF0DB;
+  --secondary-foreground: #5a1530;
+  --muted: #F5E6CA;
+  --muted-foreground: #6b5e50;
+  --accent: #FFF0DB;
+  --accent-foreground: #5a1530;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
+  --border: #e8d5b8;
+  --input: #e8d5b8;
+  --ring: #D4A843;
+  --chart-1: #7B1E3A;
+  --chart-2: #D4A843;
+  --chart-3: #2D6A4F;
+  --chart-4: #1B3A5C;
+  --chart-5: #B22234;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #FFF8E7;
+  --sidebar-foreground: #1a1a2e;
+  --sidebar-primary: #7B1E3A;
+  --sidebar-primary-foreground: #FFF8E7;
+  --sidebar-accent: #FFF0DB;
+  --sidebar-accent-foreground: #5a1530;
+  --sidebar-border: #e8d5b8;
+  --sidebar-ring: #D4A843;
 }
 
 .dark {
@@ -127,4 +127,16 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Bhutanese decorative kemar band — red accent stripe */
+.kemar-band {
+  height: 4px;
+  background: linear-gradient(90deg, #7B1E3A 0%, #B22234 30%, #D4A843 50%, #B22234 70%, #7B1E3A 100%);
+}
+
+/* Prayer flag inspired multi-color stripe */
+.prayer-flag-stripe {
+  height: 3px;
+  background: linear-gradient(90deg, #1B3A5C 0%, #1B3A5C 20%, #ffffff 20%, #ffffff 40%, #B22234 40%, #B22234 60%, #2D6A4F 60%, #2D6A4F 80%, #D4A843 80%, #D4A843 100%);
 }

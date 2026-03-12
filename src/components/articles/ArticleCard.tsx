@@ -14,7 +14,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Link href={`/articles/${article.slug}`}>
-      <Card className="h-full transition-colors hover:border-amber-300 hover:shadow-sm">
+      <Card className="h-full transition-colors hover:border-[#D4A843] hover:shadow-sm">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-lg leading-tight">{article.title}</CardTitle>

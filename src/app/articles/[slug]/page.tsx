@@ -70,14 +70,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Article summary */}
         {article.summary && (
-          <div className="bg-slate-50 border rounded-lg p-4 mb-8">
+          <div className="bg-[#FFF0DB]/40 border border-[#e8d5b8] rounded-lg p-4 mb-8">
             <p className="text-muted-foreground italic">{article.summary}</p>
           </div>
         )}
 
         {/* Article content */}
         <div
-          className="prose prose-slate max-w-none prose-headings:scroll-mt-20 prose-a:text-amber-700"
+          className="prose prose-slate max-w-none prose-headings:scroll-mt-20 prose-a:text-[#7B1E3A]"
           dangerouslySetInnerHTML={{ __html: article.content_md || '<p>This article is empty. Be the first to contribute.</p>' }}
         />
       </div>

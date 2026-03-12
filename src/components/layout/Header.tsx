@@ -28,10 +28,10 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-amber-600" />
+            <BookOpen className="h-6 w-6 text-[#7B1E3A]" />
             <span className="text-xl font-bold">
-              <span className="text-slate-800">Bhutan</span>
-              <span className="text-amber-600">Wiki</span>
+              <span className="text-[#1a1a2e]">Bhutan</span>
+              <span className="text-[#D4A843]">Wiki</span>
             </span>
           </Link>
 
@@ -82,7 +82,7 @@ export default function Header() {
                 <Button variant="ghost" size="sm">Sign In</Button>
               </Link>
               <Link href="/auth/register">
-                <Button size="sm" className="bg-amber-600 hover:bg-amber-700">Get Started</Button>
+                <Button size="sm" className="bg-[#7B1E3A] hover:bg-[#5a1530] text-white">Get Started</Button>
               </Link>
             </div>
           )}
@@ -126,7 +126,7 @@ export default function Header() {
                   <Link href="/auth/login" className="text-lg font-medium" onClick={() => setMobileOpen(false)}>
                     Sign In
                   </Link>
-                  <Link href="/auth/register" className="text-lg font-medium text-amber-600" onClick={() => setMobileOpen(false)}>
+                  <Link href="/auth/register" className="text-lg font-medium text-[#7B1E3A]" onClick={() => setMobileOpen(false)}>
                     Get Started
                   </Link>
                 </>

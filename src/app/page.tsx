@@ -29,32 +29,36 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(217,119,6,0.15),transparent_70%)]" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#3a0a1a] via-[#5a1530] to-[#7B1E3A] text-white">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(212,168,67,0.3) 30px, rgba(212,168,67,0.3) 31px)' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(212,168,67,0.15),transparent_60%)]" />
         <div className="container mx-auto px-4 py-20 md:py-32 relative">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               The People&apos;s Encyclopedia{' '}
-              <span className="text-amber-400">of Bhutan</span>
+              <span className="text-[#D4A843] whitespace-nowrap">of Bhutan</span>
             </h1>
-            <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 mb-8 leading-relaxed">
               Every Voice, Every Story, Every Truth. An open, community-owned repository
               documenting the complete history, culture, and lived experience of all
               Bhutanese people — including the stories that official narratives have erased.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button asChild size="lg" className="bg-amber-600 hover:bg-amber-700 text-base">
+              <Button asChild size="lg" className="bg-[#D4A843] hover:bg-[#c49a35] text-[#3a0a1a] font-semibold text-base">
                 <Link href="/articles">
                   Browse Articles
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="text-base border-slate-400 text-white bg-transparent hover:bg-white/10">
+              <Button asChild variant="outline" size="lg" className="text-base border-white/40 text-white bg-transparent hover:bg-white/10">
                 <Link href="/auth/register">Start Contributing</Link>
               </Button>
             </div>
           </div>
         </div>
+        {/* Kemar band at bottom of hero */}
+        <div className="kemar-band" />
       </section>
 
       {/* Categories */}
@@ -66,9 +70,9 @@ export default function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {CATEGORIES.map((cat) => (
             <Link key={cat.slug} href={`/articles?category=${cat.slug}`}>
-              <Card className="h-full transition-all hover:border-amber-300 hover:shadow-md hover:-translate-y-0.5">
+              <Card className="h-full transition-all hover:border-[#D4A843] hover:shadow-md hover:-translate-y-0.5">
                 <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="mb-3 text-amber-600">
+                  <div className="mb-3 text-[#7B1E3A]">
                     {iconMap[cat.icon]}
                   </div>
                   <h3 className="font-semibold">{cat.label}</h3>
@@ -80,7 +84,7 @@ export default function HomePage() {
       </section>
 
       {/* Mission */}
-      <section className="bg-slate-50 border-y">
+      <section className="bg-[#FFF0DB]/50 border-y border-[#e8d5b8]">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-4">Why BhutanWiki?</h2>
@@ -92,15 +96,15 @@ export default function HomePage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
               <div>
-                <div className="text-3xl font-bold text-amber-600 mb-1">100,000+</div>
+                <div className="text-3xl font-bold text-[#7B1E3A] mb-1">100,000+</div>
                 <p className="text-sm text-muted-foreground">Refugees displaced</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-amber-600 mb-1">3</div>
+                <div className="text-3xl font-bold text-[#7B1E3A] mb-1">3</div>
                 <p className="text-sm text-muted-foreground">Languages supported</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-amber-600 mb-1">Open</div>
+                <div className="text-3xl font-bold text-[#7B1E3A] mb-1">Open</div>
                 <p className="text-sm text-muted-foreground">CC BY-SA 4.0 licensed</p>
               </div>
             </div>
@@ -116,7 +120,7 @@ export default function HomePage() {
             Whether you are part of the diaspora, a researcher, a journalist, or simply
             someone who believes in truth — join us. Anonymous contributions welcome.
           </p>
-          <Button asChild size="lg" className="bg-amber-600 hover:bg-amber-700">
+          <Button asChild size="lg" className="bg-[#7B1E3A] hover:bg-[#5a1530] text-white">
             <Link href="/auth/register">
               Become a Contributor
               <ArrowRight className="ml-2 h-4 w-4" />
