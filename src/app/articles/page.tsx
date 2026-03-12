@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import ArticleCard from '@/components/articles/ArticleCard'
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { CATEGORIES } from '@/lib/constants'
 import type { Article } from '@/lib/types'
 
-export default function ArticlesPage() {
+function ArticlesContent() {
   const searchParams = useSearchParams()
   const categoryFilter = searchParams.get('category')
   const [articles, setArticles] = useState<Article[]>([])
@@ -42,14 +42,7 @@ export default function ArticlesPage() {
   }, [activeCategory])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Articles</h1>
-        <p className="text-muted-foreground">
-          Browse the encyclopedia
-        </p>
-      </div>
-
+    <>
       {/* Category filters */}
       <div className="flex flex-wrap gap-2 mb-8">
         <Button
@@ -93,6 +86,31 @@ export default function ArticlesPage() {
           ))}
         </div>
       )}
+    </>
+  )
+}
+
+export default function ArticlesPage() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Articles</h1>
+        <p className="text-muted-foreground">
+          Browse the encyclopedia
+        </p>
+      </div>
+
+      <Suspense
+        fallback={
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-48 rounded-lg bg-muted animate-pulse" />
+            ))}
+          </div>
+        }
+      >
+        <ArticlesContent />
+      </Suspense>
     </div>
   )
 }
