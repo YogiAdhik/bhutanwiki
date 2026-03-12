@@ -1,4 +1,7 @@
+export const dynamic = 'force-dynamic'
+
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
 import { CATEGORIES } from '@/lib/constants'
 import {
@@ -27,7 +30,14 @@ const iconMap: Record<string, React.ReactNode> = {
   FileText: <FileText className="h-7 w-7" />,
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient()
+  const { count } = await supabase
+    .from('articles')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'published')
+  const articleCount = count ?? 0
+
   return (
     <div>
       {/* Hero */}
@@ -38,7 +48,7 @@ export default function HomePage() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white/90 mb-8 backdrop-blur-sm">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#D4A843] animate-pulse" />
-              594 articles and growing
+              {articleCount} articles and growing
             </div>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
               The People&apos;s Encyclopedia{' '}
@@ -114,7 +124,7 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center rounded-full bg-[#7B1E3A]/10 p-3 mb-4">
                   <Pen className="h-6 w-6 text-[#7B1E3A]" />
                 </div>
-                <div className="text-3xl font-bold text-[#7B1E3A] mb-1">594</div>
+                <div className="text-3xl font-bold text-[#7B1E3A] mb-1">{articleCount}</div>
                 <p className="text-base text-muted-foreground font-medium">Encyclopedia articles</p>
               </div>
               <div className="text-center p-6 rounded-xl bg-white border border-[#e8d5b8]">

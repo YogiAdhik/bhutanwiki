@@ -62,7 +62,7 @@ function ArticlesContent() {
           type="text"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
-          placeholder="Search 626 articles..."
+          placeholder="Search articles..."
           className="h-11 w-full rounded-lg border border-[#e8d5b8] bg-white pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#D4A843]/50 focus:border-[#D4A843]"
         />
         {searchQuery && (
