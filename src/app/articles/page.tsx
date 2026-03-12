@@ -6,18 +6,25 @@ import { createClient } from '@/lib/supabase/client'
 import ArticleCard from '@/components/articles/ArticleCard'
 import { Button } from '@/components/ui/button'
 import { CATEGORIES } from '@/lib/constants'
+import { Search, X } from 'lucide-react'
 import type { Article } from '@/lib/types'
 
 function ArticlesContent() {
   const searchParams = useSearchParams()
   const categoryFilter = searchParams.get('category')
+  const searchFilter = searchParams.get('search')
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
   const [activeCategory, setActiveCategory] = useState<string | null>(categoryFilter)
+  const [searchQuery, setSearchQuery] = useState(searchFilter ?? '')
 
   useEffect(() => {
     setActiveCategory(categoryFilter)
   }, [categoryFilter])
+
+  useEffect(() => {
+    if (searchFilter) setSearchQuery(searchFilter)
+  }, [searchFilter])
 
   useEffect(() => {
     async function fetchArticles() {
@@ -27,10 +34,15 @@ function ArticlesContent() {
       let query = supabase
         .from('articles')
         .select('*, contributor:contributors!created_by(*)')
-        .order('updated_at', { ascending: false })
+        .eq('status', 'published')
+        .order('title')
 
       if (activeCategory) {
         query = query.eq('category', activeCategory)
+      }
+
+      if (searchQuery && searchQuery.length >= 2) {
+        query = query.or(`title.ilike.%${searchQuery}%,summary.ilike.%${searchQuery}%`)
       }
 
       const { data } = await query
@@ -39,10 +51,30 @@ function ArticlesContent() {
     }
 
     fetchArticles()
-  }, [activeCategory])
+  }, [activeCategory, searchQuery])
 
   return (
     <>
+      {/* Search input */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          placeholder="Search 626 articles..."
+          className="h-11 w-full rounded-lg border border-[#e8d5b8] bg-white pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#D4A843]/50 focus:border-[#D4A843]"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       {/* Category filters */}
       <div className="flex flex-wrap gap-2 mb-8">
         <Button

@@ -11,12 +11,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { BookOpen, Menu, Plus, User, LogOut } from 'lucide-react'
+import { BookOpen, Menu, Plus, User, LogOut, Search } from 'lucide-react'
 import { useState } from 'react'
+import SearchBar from './SearchBar'
 
 export default function Header() {
   const { user, contributor, signOut } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
 
   const navLinks = [
     { href: '/', label: 'Home' },
@@ -25,8 +27,8 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-6">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
+        <div className="flex items-center gap-6 shrink-0">
           <Link href="/" className="flex items-center gap-2">
             <BookOpen className="h-6 w-6 text-[#7B1E3A]" />
             <span className="text-xl font-bold">
@@ -48,7 +50,12 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
+        {/* Search - desktop */}
+        <div className="hidden md:block flex-1 max-w-md">
+          <SearchBar />
+        </div>
+
+        <div className="hidden md:flex items-center gap-3 shrink-0">
           {user ? (
             <>
               <Link href="/articles/new">
@@ -88,53 +95,68 @@ export default function Header() {
           )}
         </div>
 
-        {/* Mobile menu */}
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger className="md:hidden inline-flex items-center justify-center rounded-md h-10 w-10 hover:bg-accent hover:text-accent-foreground">
-            <Menu className="h-5 w-5" />
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72">
-            <nav className="flex flex-col gap-4 mt-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-lg font-medium"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {user ? (
-                <>
+        {/* Mobile: search + hamburger */}
+        <div className="flex md:hidden items-center gap-2">
+          <button
+            onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+            className="inline-flex items-center justify-center rounded-md h-10 w-10 hover:bg-accent hover:text-accent-foreground"
+          >
+            <Search className="h-5 w-5" />
+          </button>
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger className="inline-flex items-center justify-center rounded-md h-10 w-10 hover:bg-accent hover:text-accent-foreground">
+              <Menu className="h-5 w-5" />
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72">
+              <nav className="flex flex-col gap-4 mt-8">
+                {navLinks.map((link) => (
                   <Link
-                    href="/articles/new"
+                    key={link.href}
+                    href={link.href}
                     className="text-lg font-medium"
                     onClick={() => setMobileOpen(false)}
                   >
-                    New Article
+                    {link.label}
                   </Link>
-                  <button
-                    onClick={() => { signOut(); setMobileOpen(false) }}
-                    className="text-lg font-medium text-left text-muted-foreground"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/auth/login" className="text-lg font-medium" onClick={() => setMobileOpen(false)}>
-                    Sign In
-                  </Link>
-                  <Link href="/auth/register" className="text-lg font-medium text-[#7B1E3A]" onClick={() => setMobileOpen(false)}>
-                    Get Started
-                  </Link>
-                </>
-              )}
-            </nav>
-          </SheetContent>
-        </Sheet>
+                ))}
+                {user ? (
+                  <>
+                    <Link
+                      href="/articles/new"
+                      className="text-lg font-medium"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      New Article
+                    </Link>
+                    <button
+                      onClick={() => { signOut(); setMobileOpen(false) }}
+                      className="text-lg font-medium text-left text-muted-foreground"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login" className="text-lg font-medium" onClick={() => setMobileOpen(false)}>
+                      Sign In
+                    </Link>
+                    <Link href="/auth/register" className="text-lg font-medium text-[#7B1E3A]" onClick={() => setMobileOpen(false)}>
+                      Get Started
+                    </Link>
+                  </>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
+
+      {/* Mobile search bar - slides down */}
+      {mobileSearchOpen && (
+        <div className="md:hidden border-t border-[#e8d5b8] px-4 py-3 bg-white">
+          <SearchBar />
+        </div>
+      )}
     </header>
   )
 }
