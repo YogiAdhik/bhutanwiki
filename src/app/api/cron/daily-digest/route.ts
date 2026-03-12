@@ -89,7 +89,7 @@ export async function GET(req: NextRequest) {
     const totalEdits = versions.length
 
     await resend.emails.send({
-      from: 'BhutanWiki <onboarding@resend.dev>',
+      from: 'BhutanWiki <noreply@bhutanwiki.org>',
       to: NOTIFY_EMAIL,
       subject: `[BhutanWiki] Daily Digest: ${totalEdits} edit${totalEdits === 1 ? '' : 's'} across ${uniqueArticles} article${uniqueArticles === 1 ? '' : 's'}`,
       html: `

@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     })
 
     await resend.emails.send({
-      from: 'BhutanWiki <onboarding@resend.dev>',
+      from: 'BhutanWiki <noreply@bhutanwiki.org>',
       to: NOTIFY_EMAIL,
       subject: `[BhutanWiki] Edit: "${articleTitle}" by ${editorName}`,
       html: `
