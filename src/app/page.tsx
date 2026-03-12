@@ -70,12 +70,13 @@ export default function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {CATEGORIES.map((cat) => (
             <Link key={cat.slug} href={`/articles?category=${cat.slug}`}>
-              <Card className="h-full transition-all hover:border-[#D4A843] hover:shadow-md hover:-translate-y-0.5">
+              <Card className="group h-full cursor-pointer border-[#e8d5b8] bg-gradient-to-b from-white to-[#FFF8E7] transition-all duration-300 hover:border-[#D4A843] hover:shadow-lg hover:shadow-[#D4A843]/15 hover:-translate-y-1 active:translate-y-0 active:shadow-md">
                 <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="mb-3 text-[#7B1E3A]">
+                  <div className="mb-3 text-[#7B1E3A] transition-transform duration-300 group-hover:scale-110">
                     {iconMap[cat.icon]}
                   </div>
-                  <h3 className="font-semibold">{cat.label}</h3>
+                  <h3 className="font-semibold transition-colors duration-300 group-hover:text-[#7B1E3A]">{cat.label}</h3>
+                  <div className="mt-2 h-0.5 w-0 bg-[#D4A843] transition-all duration-300 group-hover:w-8 rounded-full" />
                 </CardContent>
               </Card>
             </Link>
