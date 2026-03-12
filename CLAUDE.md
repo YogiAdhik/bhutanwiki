@@ -4,35 +4,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual wiki encyclopedia documenting Bhutan's history, culture, and the Bhutanese refugee diaspora experience.
+BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual wiki encyclopedia documenting Bhutan's history, culture, and the Bhutanese refugee diaspora experience. It is live in production.
+
+## Deployment & Infrastructure
+
+- **Live URL:** https://bhutanwiki.org
+- **Hosting:** Vercel (auto-deploys from `main` branch on GitHub)
+- **Repo:** github.com/YogiAdhik/bhutanwiki
+- **Database:** Supabase Cloud (project: `izzzbwfdiqklgytrkzfr`)
+- **Domain:** bhutanwiki.org on GoDaddy, DNS pointed to Vercel (A record → `76.76.21.21`, CNAME www → `cname.vercel-dns.com`)
+- **Code changes:** `git push` to main → Vercel auto-deploys (~1 min)
+- **Content changes:** Seed scripts write directly to Supabase — instant, no deploy needed
 
 ## Commands
 
-- `npm run dev` — Start dev server
+- `npm run dev` — Start dev server (localhost:3000)
 - `npm run build` — Production build
 - `npm run lint` — Run ESLint
+- `npx tsx --env-file=.env.local scripts/seed-articles.ts` — Seed foundational articles
+- `npx tsx --env-file=.env.local scripts/seed-neutral-articles.ts` — Seed neutral/general articles
 - Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (see `.env.example`)
 
 ## Tech Stack
 
 - **Next.js 16** (App Router), TypeScript strict mode, React 19
-- **Tailwind CSS v4** + **shadcn/ui** (base-ui variant, NOT Radix — except Button which uses @radix-ui/react-slot for `asChild`)
-- **Supabase** (PostgreSQL, Auth with anonymous mode, Storage)
+- **Tailwind CSS v4** + `@tailwindcss/typography` (prose styles) + **shadcn/ui** (base-ui variant)
+- **Supabase** (PostgreSQL, Auth with anonymous sign-in enabled, Storage)
 - **Tiptap** rich text editor for article editing
-- Hosting: Vercel
+- **Hosting:** Vercel
 
 ## Architecture
 
 ### Key Directories
 - `src/app/` — Next.js App Router pages and API routes
-- `src/components/ui/` — shadcn/ui components (auto-generated, use base-ui primitives)
+- `src/components/ui/` — shadcn/ui components (use base-ui primitives)
 - `src/components/layout/` — Header, Footer
 - `src/components/articles/` — ArticleCard, ArticleEditor (Tiptap), ArticleMetadata
 - `src/components/auth/` — AuthProvider (React context for auth state)
 - `src/lib/supabase/` — client.ts (browser), server.ts (server components/routes), middleware.ts (session refresh)
 - `src/lib/types.ts` — All TypeScript interfaces (Article, ArticleVersion, Contributor, etc.)
 - `src/lib/constants.ts` — Categories, status labels, roles
-- `supabase/migrations/` — SQL migration files (001-009), run manually in Supabase dashboard
+- `scripts/` — Seed scripts for populating articles directly to Supabase
+- `supabase/migrations/` — SQL migration files (001-009), already run on production Supabase
+
+### Pages
+- `/` — Home page (hero, category grid, mission stats, CTAs)
+- `/articles` — Browse articles with category filters (client-side, wrapped in Suspense)
+- `/articles/[slug]` — Article view (server component, `force-dynamic`)
+- `/articles/[slug]/edit` — Edit article with Tiptap editor, requires auth
+- `/articles/[slug]/history` — Version history (server component, `force-dynamic`)
+- `/articles/new` — Create new article, requires auth
+- `/auth/login` — Email/password + anonymous sign-in
+- `/auth/register` — Sign up with display name (pseudonym OK)
+- `/auth/callback` — Supabase auth code exchange
 
 ### API Routes
 - `GET/POST /api/articles` — List (paginated, filterable by status/category) and create articles
@@ -48,6 +72,25 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - Core tables: `articles`, `article_versions`, `contributors`, `citations`, `tags`, `article_tags`, `discussions`, `media`, `oral_histories`
 - Every article edit creates a new `article_versions` row (version history is non-negotiable)
 - RLS policies in `009_rls_policies.sql` — published articles are public, writes require auth
+- All migrations (001-009) have been run on the production Supabase instance
+
+## Build Gotchas
+
+- Server components that call Supabase need `export const dynamic = 'force-dynamic'` to prevent build-time pre-rendering failures
+- Client pages using `useSearchParams()` must be wrapped in `<Suspense>` boundary
+- Button component uses `@radix-ui/react-slot` for `asChild` support; other shadcn components (DropdownMenuTrigger, SheetTrigger, DialogClose) use base-ui's `render` prop — do NOT nest `<Button>` inside these triggers (causes button-in-button hydration error)
+
+## Current Content (30 published articles)
+
+Seed articles attributed to "BhutanWiki Editorial" contributor.
+
+**History & Crisis:** Bhutanese Refugee Crisis, 1985 Citizenship Act, Driglam Namzha, Wangchuck Dynasty
+**People:** Ugyen Wangchuck, Jigme Wangchuck, Jigme Dorji Wangchuck, Jigme Singye Wangchuck, Jigme Khesar Namgyel Wangchuck, Tek Nath Rizal
+**Culture:** Lhotshampa, Languages of Bhutan
+**Politics:** Government of Bhutan, Constitution of Bhutan, Gross National Happiness, Human Rights in Bhutan
+**Places:** Punakha Dzong, Tiger's Nest, Tashichho Dzong, Dzongs of Bhutan, Thimphu, Paro International Airport
+**Society/Economy:** Economy of Bhutan, Hydropower in Bhutan, Tourism in Bhutan, Bhutanese Ngultrum, Druk Air, Bhutan Airlines, Media and Press Freedom in Bhutan
+**Diaspora:** Refugee Camps in Nepal
 
 ## Conventions
 
@@ -56,8 +99,7 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - **Database tables:** snake_case
 - **API routes:** kebab-case
 - **Styling:** Tailwind utilities only
-- **shadcn/ui quirk:** These components use base-ui primitives. Button is customized to use `@radix-ui/react-slot` for `asChild` support. Other components (DropdownMenuTrigger, SheetTrigger, DialogClose) use base-ui's `render` prop instead.
-- Three languages: English (en), Nepali (ne), Dzongkha (dz)
+- Three languages supported: English (en), Nepali (ne), Dzongkha (dz)
 
 ## Content Standards
 
