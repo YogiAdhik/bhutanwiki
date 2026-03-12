@@ -69,10 +69,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 History
               </Button>
             </Link>
-            <Button variant="outline" size="sm" disabled>
-              <MessageSquare className="mr-1 h-3.5 w-3.5" />
-              Discussion
-            </Button>
+            <Link href={`/articles/${slug}/discussion`}>
+              <Button variant="outline" size="sm">
+                <MessageSquare className="mr-1 h-3.5 w-3.5" />
+                Discussion
+              </Button>
+            </Link>
             <TextToSpeech content={article.content_md || ''} />
             <ShareButtons title={article.title} slug={slug} />
           </div>

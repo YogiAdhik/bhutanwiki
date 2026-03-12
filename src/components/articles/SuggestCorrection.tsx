@@ -58,7 +58,7 @@ export default function SuggestCorrection({ articleId }: { articleId: string }) 
       const { error: insertError } = await supabase.from('discussions').insert({
         article_id: articleId,
         author_id: authorId ?? null,
-        content: fullContent,
+        content_md: fullContent,
       })
 
       if (insertError) {
