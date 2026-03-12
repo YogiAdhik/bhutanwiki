@@ -13,6 +13,7 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - **Repo:** github.com/YogiAdhik/bhutanwiki
 - **Database:** Supabase Cloud (project: `izzzbwfdiqklgytrkzfr`)
 - **Domain:** bhutanwiki.org on GoDaddy, DNS pointed to Vercel (A record → `76.76.21.21`, CNAME www → `cname.vercel-dns.com`)
+- **Email:** Resend (verified domain `bhutanwiki.org`), sends from `noreply@bhutanwiki.org`
 - **Code changes:** `git push` to main → Vercel auto-deploys (~1 min)
 - **Content changes:** Seed scripts write directly to Supabase — instant, no deploy needed
 
@@ -24,7 +25,8 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `npx tsx --env-file=.env.local scripts/seed-topic.ts <topic>` — Seed articles by topic (e.g., `history`, `diaspora-all`)
 - `npx tsx --env-file=.env.local scripts/seed-images.ts` — Attach Wikimedia Commons images to top articles
 - `npx tsx scripts/generate-icons.ts` — Regenerate app icons and splash screens
-- Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+- `npx tsx --env-file=.env.local scripts/test-email.ts` — Test Resend email delivery
+- Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`
 
 ## Tech Stack
 
@@ -72,6 +74,14 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `GET/POST /api/articles` — List (paginated, filterable by status/category) and create articles
 - `GET/PUT/DELETE /api/articles/[slug]` — Single article CRUD; PUT creates a new version entry
 - `GET /api/articles/[slug]/versions` — Version history
+- `POST /api/notify/edit` — Supabase webhook endpoint, sends instant email notification on article edit
+- `GET /api/cron/daily-digest` — Vercel cron (8am UTC daily), sends summary of last 24h edits
+
+### Email Notifications
+- **Instant:** Supabase database webhook on `article_versions` INSERT → `POST /api/notify/edit` → Resend email to `yogesha@att.net`
+- **Daily digest:** Vercel cron (`vercel.json`) at 8am UTC → `GET /api/cron/daily-digest` → summarizes all edits from last 24h
+- **From address:** `noreply@bhutanwiki.org` (domain verified on Resend)
+- **Env vars needed:** `RESEND_API_KEY`, `CRON_SECRET` (Vercel), `SUPABASE_WEBHOOK_SECRET` (optional, for webhook auth)
 
 ### Auth Flow
 - `AuthProvider` wraps the app, exposes `useAuth()` hook with `user`, `contributor`, `signIn`, `signUp`, `signInAnonymously`, `signOut`
