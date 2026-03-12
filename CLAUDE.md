@@ -92,13 +92,31 @@ Seed articles attributed to "BhutanWiki Editorial" contributor.
 **Society/Economy:** Economy of Bhutan, Hydropower in Bhutan, Tourism in Bhutan, Bhutanese Ngultrum, Druk Air, Bhutan Airlines, Media and Press Freedom in Bhutan
 **Diaspora:** Refugee Camps in Nepal
 
+## Visual Theme — Bhutanese Identity
+
+The portal uses an authentic Bhutanese color palette (not generic amber/slate):
+
+- **Primary (maroon):** `#7B1E3A` — inspired by dzong walls and Buddhist robes
+- **Gold accent:** `#D4A843` — Bhutanese flag saffron, used for highlights and hover states
+- **Dark maroon:** `#5a1530` / `#3a0a1a` — hero gradients, dark text
+- **Cream background:** `#FFFBF5` — warm paper-like base
+- **Sand/warm borders:** `#e8d5b8`
+- **Secondary warm:** `#FFF0DB` — muted backgrounds (mission section, summary boxes)
+- **Crimson:** `#B22234`, **Forest green:** `#2D6A4F`, **Deep blue:** `#1B3A5C` — charts and prayer flag stripe
+
+Decorative CSS classes in `globals.css`:
+- `.kemar-band` — 4px gradient stripe (maroon→crimson→gold→crimson→maroon), used at bottom of hero
+- `.prayer-flag-stripe` — 3px multi-color stripe (blue/white/red/green/gold), used at top of footer
+
+When adding new components, use these Bhutanese colors instead of Tailwind's default amber/slate palette.
+
 ## Conventions
 
 - **Article slugs:** kebab-case (auto-generated from title via `slugify()`)
 - **Components:** PascalCase filenames
 - **Database tables:** snake_case
 - **API routes:** kebab-case
-- **Styling:** Tailwind utilities only
+- **Styling:** Tailwind utilities only — use Bhutanese color hex values (see theme section above)
 - Three languages supported: English (en), Nepali (ne), Dzongkha (dz)
 
 ## Content Standards
