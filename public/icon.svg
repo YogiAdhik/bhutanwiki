@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#7B1E3A"/>
+  <g transform="translate(256,240)" fill="none" stroke="#D4A843" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Open book icon -->
+    <path d="M0,-80 C0,-80 -100,-100 -140,-60 L-140,80 C-100,40 0,60 0,60"/>
+    <path d="M0,-80 C0,-80 100,-100 140,-60 L140,80 C100,40 0,60 0,60"/>
+    <!-- Center spine -->
+    <line x1="0" y1="-80" x2="0" y2="60"/>
+  </g>
+  <!-- BW text -->
+  <text x="256" y="420" text-anchor="middle" font-family="Georgia,serif" font-size="72" font-weight="bold" fill="#FFFBF5">BhutanWiki</text>
+</svg>
