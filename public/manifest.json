@@ -1,0 +1,21 @@
+{
+  "name": "BhutanWiki",
+  "short_name": "BhutanWiki",
+  "description": "The People's Encyclopedia of Bhutan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFBF5",
+  "theme_color": "#7B1E3A",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

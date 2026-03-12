@@ -4,8 +4,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import ArticleMetadata from '@/components/articles/ArticleMetadata'
+import ShareButtons from '@/components/articles/ShareButtons'
+import ContentWarning from '@/components/articles/ContentWarning'
 import { Button } from '@/components/ui/button'
+import TextToSpeech from '@/components/articles/TextToSpeech'
 import { Pencil, History, MessageSquare } from 'lucide-react'
+import SuggestCorrection from '@/components/articles/SuggestCorrection'
+import CommunityPrompt from '@/components/articles/CommunityPrompt'
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>
@@ -43,6 +48,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
+        {/* Content warning for sensitive articles */}
+        <ContentWarning slug={slug} />
+
         {/* Article header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">{article.title}</h1>
@@ -65,6 +73,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <MessageSquare className="mr-1 h-3.5 w-3.5" />
               Discussion
             </Button>
+            <TextToSpeech content={article.content_md || ''} />
+            <ShareButtons title={article.title} slug={slug} />
           </div>
         </div>
 
@@ -80,6 +90,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           className="prose prose-slate max-w-none prose-headings:scroll-mt-20 prose-a:text-[#7B1E3A]"
           dangerouslySetInnerHTML={{ __html: article.content_md || '<p>This article is empty. Be the first to contribute.</p>' }}
         />
+
+        {/* Community engagement prompt */}
+        <CommunityPrompt slug={slug} />
+
+        {/* Suggest a correction */}
+        <SuggestCorrection articleId={article.id} />
       </div>
     </div>
   )
