@@ -5,14 +5,14 @@ export const SOURCE_TYPES = ['book', 'journal', 'news', 'report', 'oral', 'gover
 export const SUPPORTED_LANGUAGES = ['en', 'ne', 'dz'] as const
 
 export const CATEGORIES = [
-  { slug: 'history', label: 'History', icon: 'BookOpen' },
-  { slug: 'people', label: 'People', icon: 'Users' },
-  { slug: 'places', label: 'Places', icon: 'MapPin' },
-  { slug: 'culture', label: 'Culture', icon: 'Palette' },
-  { slug: 'politics', label: 'Politics', icon: 'Landmark' },
-  { slug: 'society', label: 'Society', icon: 'Building' },
-  { slug: 'diaspora', label: 'Diaspora', icon: 'Globe' },
-  { slug: 'documents', label: 'Documents', icon: 'FileText' },
+  { slug: 'history', label: 'History', icon: 'BookOpen', description: 'From ancient kingdoms to modern nation' },
+  { slug: 'people', label: 'People', icon: 'Users', description: 'Kings, leaders, artists, and activists' },
+  { slug: 'places', label: 'Places', icon: 'MapPin', description: 'Dzongs, valleys, mountains, and diaspora cities' },
+  { slug: 'culture', label: 'Culture', icon: 'Palette', description: 'Language, cuisine, festivals, and arts' },
+  { slug: 'politics', label: 'Politics', icon: 'Landmark', description: 'Government, law, and democracy' },
+  { slug: 'society', label: 'Society', icon: 'Building', description: 'Economy, education, and daily life' },
+  { slug: 'diaspora', label: 'Diaspora', icon: 'Globe', description: 'Refugee crisis, resettlement, and identity' },
+  { slug: 'documents', label: 'Documents', icon: 'FileText', description: 'Treaties, laws, and historic texts' },
 ] as const
 
 export const STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
