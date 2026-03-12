@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/components/auth/AuthProvider'
 import ArticleEditor from '@/components/articles/ArticleEditor'
@@ -14,32 +14,29 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 
 export default function NewArticlePage() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, contributor, loading: authLoading, signInAnonymously } = useAuth()
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [summary, setSummary] = useState('')
   const [category, setCategory] = useState('')
   const [content, setContent] = useState('')
   const [saving, setSaving] = useState(false)
+  const [signingIn, setSigningIn] = useState(false)
 
-  if (authLoading) {
+  // Auto sign-in anonymously if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user && !signingIn) {
+      setSigningIn(true)
+      signInAnonymously().finally(() => setSigningIn(false))
+    }
+  }, [authLoading, user, signingIn, signInAnonymously])
+
+  if (authLoading || signingIn) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="h-96 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">Loading…</div>
         </div>
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold mb-4">Sign in required</h1>
-        <p className="text-muted-foreground mb-6">You need to sign in to create articles.</p>
-        <Button asChild className="bg-amber-600 hover:bg-amber-700">
-          <Link href="/auth/login">Sign In</Link>
-        </Button>
       </div>
     )
   }
@@ -83,6 +80,16 @@ export default function NewArticlePage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
+        {contributor?.is_anonymous && (
+          <div className="mb-6 rounded-lg border border-[#e8d5b8] bg-[#FFF0DB] px-4 py-3 text-sm text-[#5a1530]">
+            You are contributing as an anonymous user. Your work will be tracked by session ID.{' '}
+            <Link href="/auth/register" className="font-medium underline text-[#7B1E3A]">
+              Create an account
+            </Link>{' '}
+            to build a persistent edit history.
+          </div>
+        )}
+
         <h1 className="text-3xl font-bold mb-8">Create New Article</h1>
 
         <div className="space-y-6">
