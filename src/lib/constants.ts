@@ -21,3 +21,24 @@ export const STATUS_LABELS: Record<string, { label: string; variant: 'default' |
   published: { label: 'Published', variant: 'default' },
   disputed: { label: 'Disputed', variant: 'destructive' },
 }
+
+// Directory categories
+export const DIRECTORY_CATEGORIES = [
+  { slug: 'education', name: 'Education', icon: 'GraduationCap', description: 'Schools, colleges, universities, and training institutes' },
+  { slug: 'healthcare', name: 'Healthcare', icon: 'Heart', description: 'Hospitals, clinics, and health services' },
+  { slug: 'government', name: 'Government', icon: 'Landmark', description: 'Government offices and public services' },
+  { slug: 'hospitality', name: 'Hospitality', icon: 'Hotel', description: 'Hotels, restaurants, and accommodation' },
+  { slug: 'business', name: 'Business', icon: 'Briefcase', description: 'Companies, enterprises, and commercial establishments' },
+  { slug: 'religious-sites', name: 'Religious Sites', icon: 'Church', description: 'Dzongs, monasteries, temples, and sacred places' },
+  { slug: 'entertainment-media', name: 'Entertainment & Media', icon: 'Film', description: 'Films, media, cultural centers, and recreation' },
+  { slug: 'tourism', name: 'Tourism', icon: 'Mountain', description: 'Tourist attractions, parks, and heritage sites' },
+  { slug: 'infrastructure', name: 'Infrastructure', icon: 'Building2', description: 'Transport, utilities, and public infrastructure' },
+  { slug: 'municipalities', name: 'Municipalities', icon: 'MapPin', description: 'Cities, towns, and urban centers' },
+] as const
+
+export const DIRECTORY_LISTING_STATUSES: Record<string, { label: string; color: string }> = {
+  draft: { label: 'Draft', color: 'bg-gray-100 text-gray-800' },
+  review: { label: 'Under Review', color: 'bg-yellow-100 text-yellow-800' },
+  published: { label: 'Published', color: 'bg-green-100 text-green-800' },
+  rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800' },
+}

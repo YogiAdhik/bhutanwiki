@@ -80,3 +80,66 @@ export type ProtectionLevel = 'open' | 'semi' | 'full'
 export type ContributorRole = 'reader' | 'contributor' | 'editor' | 'admin' | 'steward'
 export type SourceType = 'book' | 'journal' | 'news' | 'report' | 'oral' | 'government' | 'web'
 export type SupportedLanguage = 'en' | 'ne' | 'dz'
+
+// Directory types
+export interface Dzongkhag {
+  id: string
+  name: string
+  name_dz: string | null
+  slug: string
+  area_km2: number | null
+  population: number | null
+  capital: string | null
+  created_at: string
+}
+
+export interface Gewog {
+  id: string
+  name: string
+  name_dz: string | null
+  slug: string
+  dzongkhag_id: string
+  created_at: string
+}
+
+export interface DirectoryCategory {
+  id: string
+  name: string
+  slug: string
+  parent_id: string | null
+  icon: string | null
+  description: string | null
+  display_order: number
+  created_at: string
+  subcategories?: DirectoryCategory[]
+}
+
+export interface DirectoryListing {
+  id: string
+  article_id: string | null
+  name: string
+  slug: string
+  category_id: string
+  dzongkhag_id: string | null
+  gewog_id: string | null
+  address: string | null
+  latitude: number | null
+  longitude: number | null
+  phone: string[] | null
+  email: string | null
+  website: string | null
+  description: string | null
+  established_year: number | null
+  featured_image: string | null
+  status: DirectoryListingStatus
+  created_by: string | null
+  created_at: string
+  updated_at: string
+  // Joined fields
+  category?: DirectoryCategory
+  dzongkhag?: Dzongkhag
+  gewog?: Gewog
+  contributor?: Contributor
+}
+
+export type DirectoryListingStatus = 'draft' | 'review' | 'published' | 'rejected'

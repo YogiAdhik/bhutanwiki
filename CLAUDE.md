@@ -26,6 +26,8 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `npx tsx --env-file=.env.local scripts/seed-images.ts` — Attach Wikimedia Commons images to top articles
 - `npx tsx scripts/generate-icons.ts` — Regenerate app icons and splash screens
 - `npx tsx --env-file=.env.local scripts/test-email.ts` — Test Resend email delivery
+- `npx tsx --env-file=.env.local scripts/seed-directory.ts` — Seed directory data (dzongkhags, gewogs, categories, listings)
+- `npx supabase db push` — Push pending migrations to remote Supabase (requires `supabase link` first)
 - Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`
 
 ## Tech Stack
@@ -45,14 +47,15 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `src/components/ui/` — shadcn/ui components (use base-ui primitives)
 - `src/components/layout/` — Header (with SearchBar), Footer
 - `src/components/articles/` — ArticleCard, ArticleEditor, ArticleMetadata, ShareButtons, ContentWarning, TextToSpeech, SuggestCorrection, CommunityPrompt, DiscussionSection
+- `src/components/directory/` — ListingCard, DirectoryCategoryCard, DirectoryFilters
 - `src/components/auth/` — AuthProvider (React context for auth state)
 - `src/components/ServiceWorkerRegister.tsx` — PWA service worker registration
 - `src/lib/supabase/` — client.ts (browser), server.ts (server components/routes), middleware.ts (session refresh)
-- `src/lib/types.ts` — All TypeScript interfaces (Article, ArticleVersion, Contributor, Discussion, etc.)
-- `src/lib/constants.ts` — Categories (with descriptions and icons), status labels, roles
+- `src/lib/types.ts` — All TypeScript interfaces (Article, ArticleVersion, Contributor, Discussion, Dzongkhag, Gewog, DirectoryCategory, DirectoryListing, etc.)
+- `src/lib/constants.ts` — Categories, directory categories, status labels, roles
 - `scripts/` — Seed scripts and icon generation
 - `scripts/articles/` — Article content organized by topic (TypeScript files → aggregator files → seed-topic.ts)
-- `supabase/migrations/` — SQL migration files (001-009), already run on production Supabase
+- `supabase/migrations/` — SQL migration files (001-010), all run on production Supabase
 - `android/` — Capacitor Android project (Android Studio)
 - `ios/` — Capacitor iOS project (Xcode)
 
@@ -64,6 +67,11 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `/articles/[slug]/history` — Version history (server component, `force-dynamic`)
 - `/articles/[slug]/discussion` — Talk page for article discussions (server component + client DiscussionSection)
 - `/articles/new` — Create new article, auto anonymous sign-in
+- `/directory` — Directory home (server component, `force-dynamic`) with category grid and listing counts
+- `/directory/[category]` — Browse listings by category with search and dzongkhag filters (client-side, Suspense)
+- `/directory/listing/[slug]` — Listing detail page (server component, `force-dynamic`) with location, contact, metadata
+- `/directory/dzongkhag/[slug]` — Browse listings by district (client-side, Suspense)
+- `/directory/submit` — Submit new listing form, auto anonymous sign-in
 - `/auth/login` — Email/password + anonymous sign-in
 - `/auth/register` — Sign up with display name (pseudonym OK)
 - `/auth/forgot-password` — Password reset email
@@ -74,6 +82,10 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - `GET/POST /api/articles` — List (paginated, filterable by status/category) and create articles
 - `GET/PUT/DELETE /api/articles/[slug]` — Single article CRUD; PUT creates a new version entry
 - `GET /api/articles/[slug]/versions` — Version history
+- `GET/POST /api/directory` — List directory listings (filterable by category, dzongkhag, search) and create
+- `GET/PUT /api/directory/[slug]` — Single listing CRUD
+- `GET /api/directory/categories` — Nested directory categories
+- `GET /api/directory/dzongkhags` — All 20 dzongkhags with gewog counts
 - `POST /api/notify/edit` — Supabase webhook endpoint, sends instant email notification on article edit
 - `GET /api/cron/daily-digest` — Vercel cron (8am UTC daily), sends summary of last 24h edits
 
@@ -91,10 +103,13 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 
 ### Database
 - Core tables: `articles`, `article_versions`, `contributors`, `citations`, `tags`, `article_tags`, `discussions`, `media`, `oral_histories`
+- Directory tables (migration 010): `dzongkhags` (20 districts), `gewogs` (195 village blocks), `directory_categories` (10 parents + 40 subcategories, hierarchical via `parent_id`), `directory_listings` (establishments with category, location, contact, status)
 - Every article edit creates a new `article_versions` row (version history is non-negotiable)
 - `discussions` table: `id`, `article_id`, `parent_id` (threading), `content_md`, `author_id`, `created_at`
-- RLS policies in `009_rls_policies.sql` — published articles are public, writes require auth, anyone can read discussions
-- All migrations (001-009) have been run on the production Supabase instance
+- `directory_listings` can optionally link to an `articles` row via `article_id` for deeper wiki content
+- RLS policies in `009_rls_policies.sql` and `010_directory.sql` — published content is public, writes require auth
+- All migrations (001-010) have been run on the production Supabase instance
+- Supabase CLI linked: `npx supabase link --project-ref izzzbwfdiqklgytrkzfr`, then `npx supabase db push` to apply new migrations
 
 ### Article Seeding Pipeline
 - `scripts/articles/types.ts` — `SeedArticle` interface: `{ slug, title, category, summary, content_md (HTML), status }`
@@ -102,6 +117,12 @@ BhutanWiki (bhutanwiki.org) is a custom-built, open, crowdsourced, multilingual 
 - Aggregator files (e.g., `documents-all.ts`, `diaspora-all.ts`) combine batch files
 - `scripts/seed-topic.ts` — Universal seeder: dynamically imports topic, creates "BhutanWiki Editorial" contributor, upserts articles
 - `scripts/seed-images.ts` — Wikimedia Commons image pipeline: search → download with User-Agent → upload to Supabase Storage → update article HTML
+
+### Directory Seeding Pipeline
+- `scripts/seed-dzongkhags.ts` — All 20 dzongkhags with Dzongkha names, population, area, capital, and 195 gewogs
+- `scripts/seed-directory-categories.ts` — 10 parent categories (Education, Healthcare, Government, Hospitality, Business, Religious Sites, Entertainment & Media, Tourism, Infrastructure, Municipalities) with 40 subcategories
+- `scripts/seed-directory-listings.ts` — 41 real Bhutanese establishments (universities, hospitals, dzongs, airlines, banks, films, national parks, etc.)
+- `scripts/seed-directory.ts` — Seed runner: inserts dzongkhags → gewogs → categories → listings with FK resolution and upsert for idempotency
 
 ### Mobile App (Capacitor)
 - **App ID:** `org.bhutanwiki.app`
